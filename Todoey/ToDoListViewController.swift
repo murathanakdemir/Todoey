@@ -8,11 +8,15 @@
 import UIKit
 
 class ToDoListViewController: UITableViewController {
-    let itemArray = ["Find Mike","Buy Eggos","Destroy Demorgorgon"]
+    var itemArray = ["Find Mike","Buy Eggos","Destroy Demorgorgon"]
+    
+    let defaults = UserDefaults.standard
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        itemArray = defaults.array(forKey: "ToDoListArray") as! [String]
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -40,6 +44,21 @@ class ToDoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
-
+    @IBAction func pressAddButton(_ sender: UIBarButtonItem) {
+        var textField = UITextField();
+        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add New Item", style: .default) { (action) in
+            self.itemArray.append(textField.text!)
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
+            self.tableView.reloadData()
+        }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Item Name"
+            textField = alertTextField
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 
